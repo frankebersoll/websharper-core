@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "WebSharper.FSharp": {
+      "commandName": "Project",
+      "commandLineArgs": "@obj\\ResponseFile.rsp",
+      "workingDirectory": "..\\TestProjectCore31"
+    }
+  }
+}

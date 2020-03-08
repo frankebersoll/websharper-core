@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Client.fs" />
+    <ResponseFile Include="ResponseFile.template.rsp" />
+    <None Include="wsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="WebSharper.Core">
+      <HintPath>..\..\..\build\Debug\FSharp\netstandard2.0\WebSharper.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSharper.Core.JavaScript">
+      <HintPath>..\..\..\build\Debug\FSharp\netstandard2.0\WebSharper.Core.JavaScript.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSharper.InterfaceGenerator">
+      <HintPath>..\..\..\build\Debug\FSharp\netstandard2.0\WebSharper.InterfaceGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSharper.Main">
+      <HintPath>..\..\..\build\Debug\netstandard2.0\WebSharper.Main.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+   <UsingTask
+    TaskName="ReplaceFileText"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.IO"/>
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[  
+          File.WriteAllText(
+            OutputFilename,
+            Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+            );
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="AfterBuildStep" AfterTargets="Build">
+    <ReplaceFileText
+       InputFilename="@(ResponseFile)" 
+       OutputFilename="obj\ResponseFile.rsp" 
+       MatchExpression="\{UserProfile\}" 
+       ReplacementText="$(UserProfile)" />
+  </Target>
+  
+</Project>

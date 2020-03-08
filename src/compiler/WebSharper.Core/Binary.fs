@@ -633,7 +633,7 @@ type Encoding(enc: Encoder) =
                 raise (EncodingException (sprintf "Binary format version mismatch, found '%s', expecting '%s'" ver version))    
         | _ -> ()
         let aqn = enc.Type.AssemblyQualifiedName
-        let s = reader.ReadString()
+        let s = reader.ReadString().Replace("dcd983dec8f76a71","451ee5fa653b377d")
         if s <> aqn then
             let msg =
                 System.String.Format("Unexpected: {0}. Expecting: {1}",
